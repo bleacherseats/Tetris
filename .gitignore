@@ -1,0 +1,7 @@
+__pycache__/display.cpython-39.pyc
+__pycache__/dqn_agent.cpython-39.pyc
+__pycache__/grid.cpython-39.pyc
+__pycache__/piece.cpython-39.pyc
+__pycache__/tetris_agent.cpython-39.pyc
+__pycache__/tetris_game.cpython-39.pyc
+tetris_game.log
