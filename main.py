@@ -1,8 +1,11 @@
 import pygame
 import random
+import numpy as np
 from tetris_game import *
 from dqn_agent import DQNAgent
 from tetris_agent import TetrisAgent
+
+MODEL_WEIGHTS_FILE = 'tetris_dqn_weights.h5'
 
 def main():
     locked_positions = {}
@@ -20,6 +23,14 @@ def main():
     state_size = GRID_WIDTH * GRID_HEIGHT
     action_size = 4  # Number of possible actions
     dqn_agent = DQNAgent(state_size, action_size)
+
+    # Load the model weights if they exist
+    try:
+        dqn_agent.load(MODEL_WEIGHTS_FILE)
+        print("Model weights loaded successfully.")
+    except Exception as e:
+        print(f"Error loading model weights: {e}")
+
     batch_size = 32
 
     while run:
@@ -75,7 +86,13 @@ def main():
             next_piece = Tetrimino(5, 0)
             change_piece = False
 
-            score += clear_rows(grid, locked_positions) * 10
+            cleared_rows = clear_rows(grid, locked_positions)
+            score += cleared_rows * 10
+            print(f"Rows cleared: {cleared_rows}, Score: {score}")
+
+            # Replay and log the loss value
+            if len(dqn_agent.memory) > batch_size:
+                dqn_agent.replay(batch_size)
 
         draw_window(screen, grid, score)
         pygame.display.update()
@@ -86,6 +103,12 @@ def main():
             pygame.time.delay(1500)
             run = False
 
+    # Save the model weights after each game
+    dqn_agent.save(MODEL_WEIGHTS_FILE)
+    print("Model weights saved successfully.")
+
+    return score
+
 def main_menu():
     global screen
     pygame.init()
@@ -93,17 +116,10 @@ def main_menu():
     screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
     pygame.display.set_caption('Tetris')
     
-    run = True
-    while run:
-        screen.fill(BLACK)
-        draw_text_middle('Press Any Key To Play', 60, WHITE, screen)
-        pygame.display.update()
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                run = False
-            if event.type == pygame.KEYDOWN:
-                main()
-    pygame.quit()
+    while True:
+        score = main()
+        print(f"Game over! Final Score: {score}")
+        pygame.time.delay(2000)  # Wait for 2 seconds before starting the next game
 
 if __name__ == "__main__":
     main_menu()

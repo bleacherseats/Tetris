@@ -113,23 +113,34 @@ def convert_shape_format(shape):
 
 def clear_rows(grid, locked):
     increment = 0
+    rows_to_clear = []
+
     for i in range(len(grid) - 1, -1, -1):
         row = grid[i]
         if BLACK not in row:
+            rows_to_clear.append(i)
             increment += 1
-            ind = i
-            for j in range(len(row)):
-                try:
-                    del locked[(j, i)]
-                except:
-                    continue
+
+    if rows_to_clear:
+        print(f"Rows to clear: {rows_to_clear}")
+
+    for row in rows_to_clear:
+        for j in range(len(grid[row])):
+            try:
+                del locked[(j, row)]
+            except KeyError:
+                continue
+
     if increment > 0:
         for key in sorted(list(locked), key=lambda x: x[1])[::-1]:
             x, y = key
-            if y < ind:
+            if y < min(rows_to_clear):
                 newKey = (x, y + increment)
                 locked[newKey] = locked.pop(key)
+
     return increment
+
+
 
 def draw_text_middle(text, size, color, surface):
     font = pygame.font.SysFont('comicsans', size, bold=True)

@@ -1,9 +1,9 @@
+import numpy as np
+import random
+from collections import deque
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
-from collections import deque
-import numpy as np
-import random
 
 class DQNAgent:
     def __init__(self, state_size, action_size):
@@ -45,3 +45,9 @@ class DQNAgent:
             self.model.fit(state, target_f, epochs=1, verbose=0)
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
+
+    def save(self, name):
+        self.model.save_weights(name)
+
+    def load(self, name):
+        self.model.load_weights(name)
