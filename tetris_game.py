@@ -94,9 +94,9 @@ def convert_shape_format(shape):
     format = shape.image()
 
     # Debug print statements
-    print(f"Shape: {shape.shape}")
-    print(f"Rotation: {shape.rotation}")
-    print(f"Format: {format}")
+    #print(f"Shape: {shape.shape}")
+    #print(f"Rotation: {shape.rotation}")
+    #print(f"Format: {format}")
 
     # Ensure format is a list of lists
     if not isinstance(format, list) or not all(isinstance(row, list) for row in format):
