@@ -5,3 +5,4 @@ __pycache__/piece.cpython-39.pyc
 __pycache__/tetris_agent.cpython-39.pyc
 __pycache__/tetris_game.cpython-39.pyc
 tetris_game.log
+__pycache__/worker.cpython-39.pyc
