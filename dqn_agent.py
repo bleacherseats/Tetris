@@ -1,9 +1,9 @@
-import numpy as np
-import random
-from collections import deque
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense
+from collections import deque
+import numpy as np
+import random
 
 class DQNAgent:
     def __init__(self, state_size, action_size):
@@ -22,7 +22,7 @@ class DQNAgent:
         model.add(Dense(24, input_dim=self.state_size, activation='relu'))
         model.add(Dense(24, activation='relu'))
         model.add(Dense(self.action_size, activation='linear'))
-        model.compile(loss='mse', optimizer=tf.keras.optimizers.Adam(lr=self.learning_rate))
+        model.compile(loss='mse', optimizer=tf.keras.optimizers.Adam(learning_rate=self.learning_rate))
         return model
 
     def remember(self, state, action, reward, next_state, done):
@@ -35,6 +35,8 @@ class DQNAgent:
         return np.argmax(act_values[0])
 
     def replay(self, batch_size):
+        if len(self.memory) < batch_size:
+            return
         minibatch = random.sample(self.memory, batch_size)
         for state, action, reward, next_state, done in minibatch:
             target = reward
@@ -46,8 +48,8 @@ class DQNAgent:
         if self.epsilon > self.epsilon_min:
             self.epsilon *= self.epsilon_decay
 
-    def save(self, name):
-        self.model.save_weights(name)
-
     def load(self, name):
         self.model.load_weights(name)
+
+    def save(self, name):
+        self.model.save_weights(name)
